@@ -40,7 +40,8 @@ body {
     position: relative;
     margin: 20px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
 }
 
