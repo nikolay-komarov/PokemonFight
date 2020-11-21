@@ -1,44 +1,62 @@
-// #1
-const firstRow = 'мама мыла раму';
-const secondRow = 'собака друг человека';
+const $btnKickCharacter = document.getElementById('btn-kick-character');
+const $btnKickEnemy = document.getElementById('btn-kick-enemy');
 
-function getRow(firstRow, secondRow) {
-  let countAInFirstRow = 0;
-  let countAInSecondRow = 0;
-
-  for (let i = 0; i < firstRow.length; i++) {
-    if (firstRow.charAt(i) === 'а') {
-      countAInFirstRow++;
-    }
-  }
-  for (let i = 0; i < secondRow.length; i++) {
-    if (secondRow.charAt(i) === 'а') {
-      countAInSecondRow++;
-    }
-  }
-
-  return (countAInFirstRow >= countAInSecondRow) ? firstRow : secondRow;
+const character = {
+  name: 'Pikachu',
+  defaultHP: 100,
+  damageHP: 100,
+  elHP: document.getElementById('health-character'),
+  elProgressbarHP: document.getElementById('progressbar-character'),
+}
+const enemy = {
+  name: 'Charmander',
+  defaultHP: 100,
+  damageHP: 100,
+  elHP: document.getElementById('health-enemy'),
+  elProgressbarHP: document.getElementById('progressbar-enemy'),
 }
 
-console.log(getRow(firstRow, secondRow)); // мама мыла раму
+$btnKickCharacter.addEventListener('click', () => {
+  console.log('kick');
+  changeHP(random(20), character);
+});
+$btnKickEnemy.addEventListener('click', () => {
+  console.log('kick');
+  changeHP(random(20), enemy);
+});
 
+const random = (num) => {
+  return Math.ceil(Math.random() * num);
+};
 
-// #2
-const VALID_COUNT = 12;
-function formattedPhone(phone) {
-  let formattedOutput = '';
-  if (phone.length === VALID_COUNT) {
-    for (i = 0; i < phone.length; i++)  {
-      formattedOutput = formattedOutput + phone.charAt(i);
-      if (i === 1) {formattedOutput = formattedOutput + ' ('}
-      if (i === 4) {formattedOutput = formattedOutput + ') '}
-      if (i === 7 || i === 9) {formattedOutput = formattedOutput + '-'}
-    }
+const renderHPLife = (person) => {
+  person.elHP.innerText = person.damageHP + ' / ' + person.defaultHP;
+};
+const renderProgressbarHP = (person) => {
+  person.elProgressbarHP.style.width = person.damageHP + '%';
+};
+const renderHP = (person) => {
+  renderHPLife(person);
+  renderProgressbarHP(person);
+};
+
+const changeHP = (count, person) => {
+  if (person.damageHP < count) {
+    person.damageHP = 0;
+    alert('Бедный ' + person.name + ' проиграл бой!');
+    $btnKickCharacter.disabled = true;
+    $btnKickEnemy.disabled = true;
   } else {
-    return 'введено не верное кол-во в номере';
-  }
+    person.damageHP -= count;
+  };
 
-  return formattedOutput;
-}
+  renderHP(person);
+};
 
-console.log(formattedPhone('+71234567890')); // +7 (123) 456-78-90
+const init = () => {
+  console.log('start');
+  renderHP(character);
+  renderHP(enemy);
+};
+
+init();
