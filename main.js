@@ -1,62 +1,76 @@
-const $btnKickCharacter = document.getElementById('btn-kick-character');
-const $btnKickEnemy = document.getElementById('btn-kick-enemy');
+const $getElById = (id) => {
+  return document.getElementById(id);
+};
+
+const $btnKickCharacter = $getElById('btn-kick-character');
+const $btnKickEnemy = $getElById('btn-kick-enemy');
 
 const character = {
   name: 'Pikachu',
   defaultHP: 100,
   damageHP: 100,
-  elHP: document.getElementById('health-character'),
-  elProgressbarHP: document.getElementById('progressbar-character'),
+  elHP: $getElById('health-character'),
+  elProgressbarHP: $getElById('progressbar-character'),
+
+  changeHP: changeHP,
+  renderHP: renderHP,
+  renderHPLife: renderHPLife,
+  renderProgressbarHP: renderProgressbarHP,
 }
 const enemy = {
   name: 'Charmander',
   defaultHP: 100,
   damageHP: 100,
-  elHP: document.getElementById('health-enemy'),
-  elProgressbarHP: document.getElementById('progressbar-enemy'),
+  elHP: $getElById('health-enemy'),
+  elProgressbarHP: $getElById('progressbar-enemy'),
+
+  changeHP: changeHP,
+  renderHP: renderHP,
+  renderHPLife: renderHPLife,
+  renderProgressbarHP: renderProgressbarHP,
 }
 
-$btnKickCharacter.addEventListener('click', () => {
+$btnKickCharacter.addEventListener('click', function () {
   console.log('kick');
-  changeHP(random(20), character);
+  character.changeHP(random(20));
 });
-$btnKickEnemy.addEventListener('click', () => {
+$btnKickEnemy.addEventListener('click', function () {
   console.log('kick');
-  changeHP(random(20), enemy);
+  enemy.changeHP(random(20));
 });
 
-const random = (num) => {
+function random (num) {
   return Math.ceil(Math.random() * num);
 };
 
-const renderHPLife = (person) => {
-  person.elHP.innerText = person.damageHP + ' / ' + person.defaultHP;
+function renderHPLife () {
+  this.elHP.innerText = this.damageHP + ' / ' + this.defaultHP;
 };
-const renderProgressbarHP = (person) => {
-  person.elProgressbarHP.style.width = person.damageHP + '%';
+function renderProgressbarHP () {
+  this.elProgressbarHP.style.width = this.damageHP + '%';
 };
-const renderHP = (person) => {
-  renderHPLife(person);
-  renderProgressbarHP(person);
+function renderHP () {
+  this.renderHPLife();
+  this.renderProgressbarHP();
 };
 
-const changeHP = (count, person) => {
-  if (person.damageHP < count) {
-    person.damageHP = 0;
-    alert('Бедный ' + person.name + ' проиграл бой!');
+function changeHP (count) {
+  this.damageHP -= count;
+
+  if (this.damageHP <= 0) {
+    this.damageHP = 0;
+    alert('Бедный ' + this.name + ' проиграл бой!');
     $btnKickCharacter.disabled = true;
     $btnKickEnemy.disabled = true;
-  } else {
-    person.damageHP -= count;
-  };
+  }
 
-  renderHP(person);
+  this.renderHP();
 };
 
-const init = () => {
+function init () {
   console.log('start');
-  renderHP(character);
-  renderHP(enemy);
+  character.renderHP();
+  enemy.renderHP();
 };
 
 init();
