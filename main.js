@@ -19,8 +19,8 @@ const character = {
 }
 const enemy = {
   name: 'Charmander',
-  defaultHP: 100,
-  damageHP: 100,
+  defaultHP: 120,
+  damageHP: 120,
   elHP: $getElById('health-enemy'),
   elProgressbarHP: $getElById('progressbar-enemy'),
 
@@ -47,17 +47,25 @@ function renderHPLife () {
   this.elHP.innerText = this.damageHP + ' / ' + this.defaultHP;
 };
 function renderProgressbarHP () {
-  this.elProgressbarHP.style.width = this.damageHP + '%';
+  this.elProgressbarHP.style.width = Math.ceil((this.damageHP / this.defaultHP) * 100) + '%';
 };
 function renderHP () {
   this.renderHPLife();
   this.renderProgressbarHP();
 };
 
+const $logs = document.querySelector('.logs__board');
+
 function changeHP (count) {
   this.damageHP -= count;
 
-  console.log((this === character) ? generateLog(character, enemy, count) : generateLog(enemy, character, count));
+  const logText = (this === character) ? generateLog(character, enemy, count) : generateLog(enemy, character, count);
+
+  // console.log(logText);
+
+  const $p = document.createElement('p');
+  $p.innerText = logText;
+  $logs.insertBefore($p, $logs.firstChild);
 
   if (this.damageHP <= 0) {
     this.damageHP = 0;
@@ -76,17 +84,23 @@ function init () {
 };
 
 function generateLog (firstPerson, secondPerson, damage) {
+  const {
+    name: characterName,
+    damageHP,
+    defaultHP
+  } = firstPerson;
+  const {name: enemyName} = secondPerson;
   const logs = [
-    `${firstPerson.name} вспомнил что-то важное, но неожиданно ${secondPerson.name}, не помня себя от испуга, ударил в предплечье врага. -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
-    `${firstPerson.name} поперхнулся, и за это ${secondPerson.name} с испугу приложил прямой удар коленом в лоб врага. -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
-    `${firstPerson.name} забылся, но в это время наглый ${secondPerson.name}, приняв волевое решение, неслышно подойдя сзади, ударил. -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
-    `${firstPerson.name} пришел в себя, но неожиданно ${secondPerson.name} случайно нанес мощнейший удар / ${firstPerson.defaultHP}.`,
-    `${firstPerson.name} поперхнулся, но в это время ${secondPerson.name} нехотя раздробил кулаком \<вырезанно цензурой\> противника. -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
-    `${firstPerson.name} удивился, а ${secondPerson.name} пошатнувшись влепил подлый удар. -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
-    `${firstPerson.name} высморкался, но неожиданно ${secondPerson.name} провел дробящий удар. -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
-    `${firstPerson.name} пошатнулся, и внезапно наглый ${secondPerson.name} беспричинно ударил в ногу противника -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
-    `${firstPerson.name} расстроился, как вдруг, неожиданно ${secondPerson.name} случайно влепил стопой в живот соперника. -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
-    `${firstPerson.name} пытался что-то сказать, но вдруг, неожиданно ${secondPerson.name} со скуки, разбил бровь сопернику -${damage} [${firstPerson.damageHP} / ${firstPerson.defaultHP}]`,
+    `${characterName} вспомнил что-то важное, но неожиданно ${enemyName}, не помня себя от испуга, ударил в предплечье врага. -${damage} [${damageHP} / ${defaultHP}]`,
+    `${characterName} поперхнулся, и за это ${enemyName} с испугу приложил прямой удар коленом в лоб врага. -${damage} [${damageHP} / ${defaultHP}]`,
+    `${characterName} забылся, но в это время наглый ${enemyName}, приняв волевое решение, неслышно подойдя сзади, ударил. -${damage} [${damageHP} / ${defaultHP}]`,
+    `${characterName} пришел в себя, но неожиданно ${enemyName} случайно нанес мощнейший удар. -${damage} [${damageHP} / ${defaultHP}].`,
+    `${characterName} поперхнулся, но в это время ${enemyName} нехотя раздробил кулаком \<вырезанно цензурой\> противника. -${damage} [${damageHP} / ${defaultHP}]`,
+    `${characterName} удивился, а ${enemyName} пошатнувшись влепил подлый удар. -${damage} [${damageHP} / ${defaultHP}]`,
+    `${characterName} высморкался, но неожиданно ${enemyName} провел дробящий удар. -${damage} [${damageHP} / ${defaultHP}]`,
+    `${characterName} пошатнулся, и внезапно наглый ${enemyName} беспричинно ударил в ногу противника. -${damage} [${damageHP} / ${defaultHP}]`,
+    `${characterName} расстроился, как вдруг, неожиданно ${enemyName} случайно влепил стопой в живот соперника. -${damage} [${damageHP} / ${defaultHP}]`,
+    `${characterName} пытался что-то сказать, но вдруг, неожиданно ${enemyName} со скуки, разбил бровь сопернику. -${damage} [${damageHP} / ${defaultHP}]`,
   ];
 
   return logs[random(logs.length) - 1];

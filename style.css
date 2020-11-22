@@ -473,3 +473,15 @@ h1 {
 .action label {
     padding: 6px 0;
 }
+
+.logs__header {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+}
+
+.logs__board {
+    font-size: 18px;
+    font-weight: 400;
+    color: #222;
+}
