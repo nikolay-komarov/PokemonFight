@@ -30,13 +30,37 @@ const enemy = {
   renderProgressbarHP: renderProgressbarHP,
 }
 
+const MAX_KICKS = 6;
+
+function countKicks (person) {
+  let count = 0;
+  const maxKicks = MAX_KICKS;
+  const {name} = person;
+
+  return function addCount(el) {
+    if (count <= (maxKicks - 1)) {
+      count += 1;
+      console.log(`kick ${name}: ${count} / ${maxKicks}; re: ${maxKicks - count}`);
+    }
+    
+    if (count === maxKicks) {
+      el.disabled = true;
+    }
+  }
+}
+
+const countKicksCharacter = countKicks(character);
+const countKicksEnemy = countKicks(enemy);
+
 $btnKickCharacter.addEventListener('click', function () {
-  console.log('kick');
   character.changeHP(random(20));
+
+  countKicksCharacter($btnKickCharacter);
 });
 $btnKickEnemy.addEventListener('click', function () {
-  console.log('kick');
   enemy.changeHP(random(20));
+
+  countKicksEnemy($btnKickEnemy);
 });
 
 function random (num) {
@@ -60,8 +84,6 @@ function changeHP (count) {
   this.damageHP -= count;
 
   const logText = (this === character) ? generateLog(character, enemy, count) : generateLog(enemy, character, count);
-
-  // console.log(logText);
 
   const $p = document.createElement('p');
   $p.innerText = logText;
