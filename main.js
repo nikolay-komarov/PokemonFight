@@ -1,10 +1,14 @@
-const $getElById = (id) => {
-  return document.getElementById(id);
-};
+import {random, $getElById} from './utils.js';
+import {
+  MAX_KICKS,
+  COUNT_JOLT_MAX,
+  COUNT_JOLT_MIN,
+  COUNT_BALL_MAX,
+  COUNT_BALL_MIN,
+} from './consts.js';
 
 const $btnTunderJolt = $getElById('btn-thunder-jolt');
 const $btnElectroBall = $getElById('btn-electro-ball');
-
 
 const character = {
   name: 'Pikachu',
@@ -13,10 +17,10 @@ const character = {
   elHP: $getElById('health-character'),
   elProgressbarHP: $getElById('progressbar-character'),
 
-  changeHP: changeHP,
-  renderHP: renderHP,
-  renderHPLife: renderHPLife,
-  renderProgressbarHP: renderProgressbarHP,
+  changeHP,
+  renderHP,
+  renderHPLife,
+  renderProgressbarHP,
 }
 const enemy = {
   name: 'Charmander',
@@ -25,13 +29,11 @@ const enemy = {
   elHP: $getElById('health-enemy'),
   elProgressbarHP: $getElById('progressbar-enemy'),
 
-  changeHP: changeHP,
-  renderHP: renderHP,
-  renderHPLife: renderHPLife,
-  renderProgressbarHP: renderProgressbarHP,
+  changeHP,
+  renderHP,
+  renderHPLife,
+  renderProgressbarHP,
 }
-
-const MAX_KICKS = 6;
 
 function countBtn (count = MAX_KICKS, el) {
   const innerText = el.innerText;
@@ -50,11 +52,6 @@ function countBtn (count = MAX_KICKS, el) {
 const btnCountJolt = countBtn(MAX_KICKS, $btnTunderJolt);
 const btnElectroBall = countBtn(MAX_KICKS, $btnElectroBall);
 
-const COUNT_JOLT_MAX = 20;
-const COUNT_JOLT_MIN = 10;
-const COUNT_BALL_MAX = 60;
-const COUNT_BALL_MIN = 20;
-
 $btnTunderJolt.addEventListener('click', function () {
   character.changeHP(random(COUNT_JOLT_MAX, COUNT_JOLT_MIN));
   enemy.changeHP(random(COUNT_JOLT_MAX, COUNT_JOLT_MIN));
@@ -63,11 +60,6 @@ $btnElectroBall.addEventListener('click', function () {
   character.changeHP(random(COUNT_BALL_MAX, COUNT_BALL_MIN));
   enemy.changeHP(random(COUNT_BALL_MAX, COUNT_BALL_MIN));
 });
-
-function random (max, min = 0) {
-  const num = max - min;
-  return Math.ceil(Math.random() * num) + min;
-};
 
 function renderHPLife () {
   this.elHP.innerText = this.damageHP + ' / ' + this.defaultHP;
