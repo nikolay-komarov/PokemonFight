@@ -2,8 +2,9 @@ const $getElById = (id) => {
   return document.getElementById(id);
 };
 
-const $btnKickCharacter = $getElById('btn-kick-character');
-const $btnKickEnemy = $getElById('btn-kick-enemy');
+const $btnTunderJolt = $getElById('btn-thunder-jolt');
+const $btnElectroBall = $getElById('btn-electro-ball');
+
 
 const character = {
   name: 'Pikachu',
@@ -32,39 +33,40 @@ const enemy = {
 
 const MAX_KICKS = 6;
 
-function countKicks (person) {
-  let count = 0;
-  const maxKicks = MAX_KICKS;
-  const {name} = person;
+function countBtn (count = MAX_KICKS, el) {
+  const innerText = el.innerText;
+  el.innerText = `${innerText} (${count})`;
 
-  return function addCount(el) {
-    if (count <= (maxKicks - 1)) {
-      count += 1;
-      console.log(`kick ${name}: ${count} / ${maxKicks}; re: ${maxKicks - count}`);
-    }
-    
-    if (count === maxKicks) {
+  return function () {
+    count--;
+    if (count === 0) {
       el.disabled = true;
     }
+    el.innerText = `${innerText} (${count})`;
+    return count;
   }
 }
 
-const countKicksCharacter = countKicks(character);
-const countKicksEnemy = countKicks(enemy);
+const btnCountJolt = countBtn(MAX_KICKS, $btnTunderJolt);
+const btnElectroBall = countBtn(MAX_KICKS, $btnElectroBall);
 
-$btnKickCharacter.addEventListener('click', function () {
-  character.changeHP(random(20));
+const COUNT_JOLT_MAX = 20;
+const COUNT_JOLT_MIN = 10;
+const COUNT_BALL_MAX = 60;
+const COUNT_BALL_MIN = 20;
 
-  countKicksCharacter($btnKickCharacter);
+$btnTunderJolt.addEventListener('click', function () {
+  character.changeHP(random(COUNT_JOLT_MAX, COUNT_JOLT_MIN));
+  enemy.changeHP(random(COUNT_JOLT_MAX, COUNT_JOLT_MIN));
 });
-$btnKickEnemy.addEventListener('click', function () {
-  enemy.changeHP(random(20));
-
-  countKicksEnemy($btnKickEnemy);
+$btnElectroBall.addEventListener('click', function () {
+  character.changeHP(random(COUNT_BALL_MAX, COUNT_BALL_MIN));
+  enemy.changeHP(random(COUNT_BALL_MAX, COUNT_BALL_MIN));
 });
 
-function random (num) {
-  return Math.ceil(Math.random() * num);
+function random (max, min = 0) {
+  const num = max - min;
+  return Math.ceil(Math.random() * num) + min;
 };
 
 function renderHPLife () {
@@ -92,8 +94,8 @@ function changeHP (count) {
   if (this.damageHP <= 0) {
     this.damageHP = 0;
     alert('Бедный ' + this.name + ' проиграл бой!');
-    $btnKickCharacter.disabled = true;
-    $btnKickEnemy.disabled = true;
+    $btnTunderJolt.disabled = true;
+    $btnElectroBall.disabled = true;
   }
 
   this.renderHP();
