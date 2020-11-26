@@ -1,3 +1,5 @@
+import Pokemon from './pokemon.js';
+
 import {random, $getElById} from './utils.js';
 import {
   MAX_KICKS,
@@ -7,33 +9,24 @@ import {
   COUNT_BALL_MIN,
 } from './consts.js';
 
-const $btnTunderJolt = $getElById('btn-thunder-jolt');
-const $btnElectroBall = $getElById('btn-electro-ball');
-
-const character = {
+const player1 = new Pokemon ({
   name: 'Pikachu',
-  defaultHP: 100,
-  damageHP: 100,
-  elHP: $getElById('health-character'),
-  elProgressbarHP: $getElById('progressbar-character'),
-
-  changeHP,
-  renderHP,
-  renderHPLife,
-  renderProgressbarHP,
-}
-const enemy = {
+  type: 'electric',
+  hp: 50,
+  selectors: 'character',
+});
+const player2 = new Pokemon ({
   name: 'Charmander',
-  defaultHP: 120,
-  damageHP: 120,
-  elHP: $getElById('health-enemy'),
-  elProgressbarHP: $getElById('progressbar-enemy'),
+  type: 'fire',
+  hp: 45,
+  selectors: 'enemy',
+});
 
-  changeHP,
-  renderHP,
-  renderHPLife,
-  renderProgressbarHP,
-}
+// console.log(player1);
+// console.log(player2);
+
+const $btnThunderJolt = $getElById('btn-thunder-jolt');
+const $btnElectroBall = $getElById('btn-electro-ball');
 
 function countBtn (count = MAX_KICKS, el) {
   const innerText = el.innerText;
@@ -49,61 +42,53 @@ function countBtn (count = MAX_KICKS, el) {
   }
 }
 
-const btnCountJolt = countBtn(MAX_KICKS, $btnTunderJolt);
+const btnThunderJolt = countBtn(MAX_KICKS, $btnThunderJolt);
 const btnElectroBall = countBtn(MAX_KICKS, $btnElectroBall);
 
-$btnTunderJolt.addEventListener('click', function () {
-  character.changeHP(random(COUNT_JOLT_MAX, COUNT_JOLT_MIN));
-  enemy.changeHP(random(COUNT_JOLT_MAX, COUNT_JOLT_MIN));
+$btnThunderJolt.addEventListener('click', function () {
+  btnThunderJolt();
+  player1.changeHP(
+    random(COUNT_JOLT_MAX, COUNT_JOLT_MIN),
+    function (count) {
+      generateLogEl(player1, player2, count);
+    },
+    endGame
+  );
+  player2.changeHP(
+    random(COUNT_JOLT_MAX, COUNT_JOLT_MIN),
+    function (count) {
+      generateLogEl(player1, player2, count);
+    },
+    endGame
+  );
 });
 $btnElectroBall.addEventListener('click', function () {
-  character.changeHP(random(COUNT_BALL_MAX, COUNT_BALL_MIN));
-  enemy.changeHP(random(COUNT_BALL_MAX, COUNT_BALL_MIN));
+  btnElectroBall();
+  player1.changeHP(
+    random(COUNT_BALL_MAX, COUNT_BALL_MIN),
+    function (count) {
+      generateLogEl(player1, player2, count);
+    },
+    endGame
+  );
+  player2.changeHP(
+    random(COUNT_BALL_MAX, COUNT_BALL_MIN),
+    function (count) {
+      generateLogEl(player1, player2, count);
+    },
+    endGame
+  );
 });
 
-function renderHPLife () {
-  this.elHP.innerText = this.damageHP + ' / ' + this.defaultHP;
-};
-function renderProgressbarHP () {
-  this.elProgressbarHP.style.width = Math.ceil((this.damageHP / this.defaultHP) * 100) + '%';
-};
-function renderHP () {
-  this.renderHPLife();
-  this.renderProgressbarHP();
-};
-
 const $logs = document.querySelector('.logs__board');
-
-function changeHP (count) {
-  this.damageHP -= count;
-
-  const logText = (this === character) ? generateLog(character, enemy, count) : generateLog(enemy, character, count);
-
-  const $p = document.createElement('p');
-  $p.innerText = logText;
-  $logs.insertBefore($p, $logs.firstChild);
-
-  if (this.damageHP <= 0) {
-    this.damageHP = 0;
-    alert('Бедный ' + this.name + ' проиграл бой!');
-    $btnTunderJolt.disabled = true;
-    $btnElectroBall.disabled = true;
-  }
-
-  this.renderHP();
-};
-
-function init () {
-  console.log('start');
-  character.renderHP();
-  enemy.renderHP();
-};
 
 function generateLog (firstPerson, secondPerson, damage) {
   const {
     name: characterName,
-    damageHP,
-    defaultHP
+    hp: {
+      current: damageHP,
+      total: defaultHP,
+    },
   } = firstPerson;
   const {name: enemyName} = secondPerson;
   const logs = [
@@ -120,6 +105,23 @@ function generateLog (firstPerson, secondPerson, damage) {
   ];
 
   return logs[random(logs.length) - 1];
+};
+
+function generateLogEl (player1, player2, count) {
+  const logText = (this === player1) ? generateLog(player1, player2, count) : generateLog(player1, player2, count);
+
+  const $p = document.createElement('p');
+  $p.innerText = logText;
+  $logs.insertBefore($p, $logs.firstChild);
+}
+
+function endGame () {
+  $btnThunderJolt.disabled = true;
+  $btnElectroBall.disabled = true;
+}
+
+function init () {
+  console.log('start');
 };
 
 init();
