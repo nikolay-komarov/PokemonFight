@@ -2,11 +2,13 @@ class Selectors {
   constructor(name) {
     this.elHP = document.getElementById(`health-${name}`);
     this.elProgressbarHP = document.getElementById(`progressbar-${name}`);
+    this.elName = document.getElementById(`name-${name}`);
+    this.elImg = document.getElementById(`img-${name}`);
   }
 }
 
 class Pokemon extends Selectors {
-  constructor({name, hp, type, selectors, attacks = []}) {
+  constructor({name, img, hp, type, selectors, attacks = []}) {
     super(selectors);
 
     this.name = name;
@@ -16,8 +18,15 @@ class Pokemon extends Selectors {
     };
     this.type = type;
     this.attacks = attacks;
+    this.img = img;
 
+    this.renderPokemon();
     this.renderHP();
+  }
+
+  renderPokemon = () => {
+    this.elName.innerText = this.name;
+    this.elImg.src = this.img;
   }
 
   changeHP = (count, cb, endGame) => {
@@ -37,7 +46,14 @@ class Pokemon extends Selectors {
     this.elHP.innerText = this.hp.current + ' / ' + this.hp.total;
   };
   renderProgressbarHP = () => {
-    this.elProgressbarHP.style.width = Math.ceil((this.hp.current / this.hp.total) * 100) + '%';
+    const percentHP = Math.ceil((this.hp.current / this.hp.total) * 100);
+    this.elProgressbarHP.style.width = percentHP + '%';
+    if (percentHP < 60 && percentHP >= 20) {
+      this.elProgressbarHP.classList.add('low');
+    }
+    if (percentHP < 20) {
+      this.elProgressbarHP.classList.add('critical');
+    }
   };
   renderHP = () => {
     this.renderHPLife();

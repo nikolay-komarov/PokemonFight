@@ -7,17 +7,15 @@ import {
 
 import {pokemons} from './pokemons.js';
 
-const pikachu = pokemons.find(item => item.name === 'Pikachu');
-const charmander = pokemons.find(item => item.name === 'Charmander');
-
-// const enemyPokemon = pokemons[random(pokemons.length)];
+const character = pokemons.find(item => item.name === 'Pikachu');
+const enemyPokemon = pokemons[random(pokemons.length)];
 
 const player1 = new Pokemon ({
-  ...pikachu,
+  ...character,
   selectors: 'player1',
 });
 const player2 = new Pokemon ({
-  ...charmander,
+  ...enemyPokemon,
   selectors: 'player2',
 });
 
