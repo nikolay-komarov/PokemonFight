@@ -1,13 +1,11 @@
-function random (max, min = 0) {
+export const random = (max, min = 0) => {
   const num = max - min;
   return Math.ceil(Math.random() * num) + min;
 };
 
-const $getElById = (id) => {
-  return document.getElementById(id);
-};
-
-export {
-  random,
-  $getElById
+export const toCapitalizeFirstLetter = (str) => {
+  return str
+    .split(' ')
+    .map(item => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase())
+    .join(' ')
 };

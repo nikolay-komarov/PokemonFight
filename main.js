@@ -1,34 +1,54 @@
 import Pokemon from './pokemon.js';
 
-import {random, $getElById} from './utils.js';
 import {
-  MAX_KICKS,
-  COUNT_JOLT_MAX,
-  COUNT_JOLT_MIN,
-  COUNT_BALL_MAX,
-  COUNT_BALL_MIN,
-} from './consts.js';
+  random,
+  toCapitalizeFirstLetter
+} from './utils.js';
+
+import {pokemons} from './pokemons.js';
+
+const pikachu = pokemons.find(item => item.name === 'Pikachu');
+const charmander = pokemons.find(item => item.name === 'Charmander');
+
+// const enemyPokemon = pokemons[random(pokemons.length)];
 
 const player1 = new Pokemon ({
-  name: 'Pikachu',
-  type: 'electric',
-  hp: 50,
-  selectors: 'character',
+  ...pikachu,
+  selectors: 'player1',
 });
 const player2 = new Pokemon ({
-  name: 'Charmander',
-  type: 'fire',
-  hp: 45,
-  selectors: 'enemy',
+  ...charmander,
+  selectors: 'player2',
 });
 
-// console.log(player1);
-// console.log(player2);
+const $controls = document.querySelector('.control');
 
-const $btnThunderJolt = $getElById('btn-thunder-jolt');
-const $btnElectroBall = $getElById('btn-electro-ball');
+player1.attacks.forEach(item => {
+  const $btn = document.createElement('button');
+  $btn.classList.add('button');
+  $btn.innerText = toCapitalizeFirstLetter(item.name);
+  const btnCount = countBtn(item.maxCount, $btn);
+  $btn.addEventListener('click', () => {
+    btnCount();
+    player1.changeHP(
+      random(item.maxDamage, item.minDamage),
+      function (count) {
+        generateLogEl(player1, player2, count);
+      },
+      endGame
+    );
+    player2.changeHP(
+      random(item.maxDamage, item.minDamage),
+      function (count) {
+        generateLogEl(player1, player2, count);
+      },
+      endGame
+    );
+  });
+  $controls.appendChild($btn);
+})
 
-function countBtn (count = MAX_KICKS, el) {
+function countBtn (count, el) {
   const innerText = el.innerText;
   el.innerText = `${innerText} (${count})`;
 
@@ -41,44 +61,6 @@ function countBtn (count = MAX_KICKS, el) {
     return count;
   }
 }
-
-const btnThunderJolt = countBtn(MAX_KICKS, $btnThunderJolt);
-const btnElectroBall = countBtn(MAX_KICKS, $btnElectroBall);
-
-$btnThunderJolt.addEventListener('click', function () {
-  btnThunderJolt();
-  player1.changeHP(
-    random(COUNT_JOLT_MAX, COUNT_JOLT_MIN),
-    function (count) {
-      generateLogEl(player1, player2, count);
-    },
-    endGame
-  );
-  player2.changeHP(
-    random(COUNT_JOLT_MAX, COUNT_JOLT_MIN),
-    function (count) {
-      generateLogEl(player1, player2, count);
-    },
-    endGame
-  );
-});
-$btnElectroBall.addEventListener('click', function () {
-  btnElectroBall();
-  player1.changeHP(
-    random(COUNT_BALL_MAX, COUNT_BALL_MIN),
-    function (count) {
-      generateLogEl(player1, player2, count);
-    },
-    endGame
-  );
-  player2.changeHP(
-    random(COUNT_BALL_MAX, COUNT_BALL_MIN),
-    function (count) {
-      generateLogEl(player1, player2, count);
-    },
-    endGame
-  );
-});
 
 const $logs = document.querySelector('.logs__board');
 
@@ -116,8 +98,7 @@ function generateLogEl (player1, player2, count) {
 }
 
 function endGame () {
-  $btnThunderJolt.disabled = true;
-  $btnElectroBall.disabled = true;
+  $controls.querySelectorAll('button').forEach(item => item.disabled = true);
 }
 
 function init () {
