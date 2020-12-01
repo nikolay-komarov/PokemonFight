@@ -36,11 +36,21 @@ body {
 
 .control {
     width: 320px;
-    height: 260px;
+    /* height: 260px; */
     position: relative;
     margin: 20px;
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.game-control {
+    margin: 50px auto 20px;
+    width: 320px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
     justify-content: space-around;
     align-items: center;
 }
@@ -268,6 +278,7 @@ body {
 
 .button {
     position: relative;
+    margin: 5px;
     background: white;
     border: 2px solid #ffc55b;
     border-radius: 10px;
