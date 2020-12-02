@@ -1,0 +1,25 @@
+{
+  "name": "PokemonFight",
+  "version": "1.0.0",
+  "description": "This is tutorial app for JS Marathon, by Zar Zakharov",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikolay-komarov/PokemonFight.git"
+  },
+  "author": "Nikolay Komarov",
+  "license": "ISC",
+  "homepage": "https://brave-lumiere-f1dacf.netlify.app/",
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "babel-loader": "^8.2.2",
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
