@@ -65,6 +65,7 @@ class Game {
   };
 
   resetGame = () => {
+    // todo: add resetGame
     console.log(`### resetGame`);
     this.$controls.querySelectorAll('button').forEach(item => item.disabled = true);
   };
